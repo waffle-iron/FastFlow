@@ -1,6 +1,7 @@
 'use strict'
 var path = require('path')
 var fs = require('fs')
+const ver = '0.9.0'
 const Regex = require("regex");
 const electron = require('electron')
 const app = electron.app
@@ -8,7 +9,8 @@ const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
 const crashReporter = electron.crashReporter
 const shell = electron.shell
-const ipcMain = require('electron').ipcMain
+const ipcMain = electron.ipcMain
+const autoUpdater = electron.autoUpdater
 let menu
 let template
 let mainWindow = null
@@ -81,12 +83,13 @@ app.on('ready', () => {
     height: 728
   })
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`)
+  //autoUpdater.setFeedURL('https://fastflowupdate.herokuapp.com/')
 
+  mainWindow.loadURL(`file://${__dirname}/app.html`)
+  log(mainWindow, 'startingheheXD')
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-
   if (process.env.NODE_ENV === 'development') {
     mainWindow.openDevTools()
   }
@@ -363,7 +366,9 @@ function searchSimple(datab, searchTerm){
     event.returnValue = searchSimple(cardDb, arg)
   })
 
-
+  function log(window, text) {
+    window.webContents.send('log', text)
+  }
   ipcMain.on('FileOpen', function (event, arg) {
     var foundCard = getCard(cardDb, arg)
     if(foundCard[0]){
@@ -384,6 +389,11 @@ function searchSimple(datab, searchTerm){
   ipcMain.on('CardManager', function (event, arg) {
     var dataJSON = tagindex(cardDb)
     event.returnValue = dataJSON
+  })
+
+  ipcMain.on('ver', function (event, arg) {
+    console.log('version call')
+    event.returnValue = ver
   })
 
   /* card saving */

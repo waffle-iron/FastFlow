@@ -199,3 +199,7 @@ function getCardBold(content, bold) {
 		return bold
 	}
 }
+
+ipcRenderer.on('log', (event, arg) => {
+  console.log(arg)
+})

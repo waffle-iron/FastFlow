@@ -10,4 +10,6 @@ module.exports = angular.module('fastflowApp.index', ['ngRoute'])
 	.controller('indexCtrl', ['$scope', '$location', 'defaultNav', function($scope, $location, defaultNav) {
 		$scope.route = "#"
 		$scope.$parent.setNav(defaultNav, 'Fast Flow')
+		//asking for ver
+		$scope.ver = ipcRenderer.sendSync('ver')
 	}])
